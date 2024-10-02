@@ -12,19 +12,27 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: onprem-linux  # Change to on-prem runner for PrivateLink access
 
     env:
-      REPO_NAME: "quickstart_common.public.quickstart_repo"
-      # Read connection secrets
-      SNOWFLAKE_CONNECTIONS_DEFAULT_ACCOUNT: "zv20465.east-us-2.privatelink"
-      SNOWFLAKE_CONNECTIONS_DEFAULT_USER: "DEVOPS_ADMIN"
-      SNOWFLAKE_CONNECTIONS_DEFAULT_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SF_ACCOUNT: "zv20465.east-us-2.privatelink"  # PrivateLink account
+      SF_USERNAME: "DEVOPS_ADMIN"
+      SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
 
     steps:
       # Checkout step is necessary if you want to use a config file from your repo
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      # Install dependencies, including Snowflake connector
+      - name: Set up Python and install dependencies
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.12"
+      - name: Install Snowflake Connector
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install snowflake-connector-python
 
       # Install Snowflake CLI GitHub Action and point to config file
       - uses: Snowflake-Labs/snowflake-cli-action@v1
@@ -36,7 +44,7 @@ jobs:
       - name: Fetch repository changes
         run: snow git fetch "${REPO_NAME}"
 
-      # Deploy pipeline with branch specific parameters
+      # Deploy pipeline with branch-specific parameters
       - name: Deploy data pipeline to ${{ github.ref_name }}
         run: |
           BRANCH_NAME=${{ github.ref_name }}
@@ -47,5 +55,8 @@ jobs:
           fi
           snow git execute \
             "@${REPO_NAME}/branches/${BRANCH_NAME}/deploy_parametrized_pipeline.sql" \
+            --account-name ${SF_ACCOUNT} \
+            --user ${SF_USERNAME} \
+            --password ${{ secrets.SNOWFLAKE_PASSWORD }} \
             -D "environment='${BRANCH_NAME}'" \
             -D "retention_time=${RETENTION_TIME}"
