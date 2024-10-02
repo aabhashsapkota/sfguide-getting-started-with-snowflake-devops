@@ -18,6 +18,7 @@ jobs:
       SF_ACCOUNT: "zv20465.east-us-2.privatelink"  # PrivateLink account
       SF_USERNAME: "DEVOPS_ADMIN"
       SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      REPO_NAME: "quickstart_common.public.quickstart_repo"
 
     steps:
       # Checkout step is necessary if you want to use a config file from your repo
