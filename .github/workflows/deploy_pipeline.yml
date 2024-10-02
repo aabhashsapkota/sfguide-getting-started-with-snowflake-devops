@@ -18,18 +18,23 @@ jobs:
       SF_ACCOUNT: "zv20465.east-us-2.privatelink"  # PrivateLink account
       SF_USERNAME: "DEVOPS_ADMIN"
       SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
-      REPO_NAME: "quickstart_common.public.quickstart_repo"
+      REPO_NAME: "quickstart_common.public.quickstart_repo"  # Ensure this is set correctly
 
     steps:
-      # Checkout step is necessary if you want to use a config file from your repo
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      # Debug REPO_NAME to ensure it is properly set
+      - name: Debug REPO_NAME
+        run: |
+          echo "Repository Name: $REPO_NAME"
 
       # Install dependencies, including Snowflake connector
       - name: Set up Python and install dependencies
         uses: actions/setup-python@v2
         with:
           python-version: "3.12"
+
       - name: Install Snowflake Connector
         run: |
           python -m pip install --upgrade pip
@@ -41,9 +46,13 @@ jobs:
           cli-version: "latest"
           default-config-file-path: "config.toml"
 
-      # Update Snowflake's copy of the repository
+      # Update Snowflake's copy of the repository with explicit variable passing
       - name: Fetch repository changes
-        run: snow git fetch "${REPO_NAME}"
+        run: |
+          snow git fetch "$REPO_NAME" \
+          --account-name "$SF_ACCOUNT" \
+          --user "$SF_USERNAME" \
+          --password "$SNOWFLAKE_PASSWORD"
 
       # Deploy pipeline with branch-specific parameters
       - name: Deploy data pipeline to ${{ github.ref_name }}
