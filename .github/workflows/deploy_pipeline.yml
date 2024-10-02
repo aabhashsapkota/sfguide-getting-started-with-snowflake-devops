@@ -12,7 +12,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: onprem-linux  # Change to on-prem runner for PrivateLink access
+    runs-on: ubuntu-latest  # Change to on-prem runner for PrivateLink access
 
     env:
       SF_ACCOUNT: "zv20465.east-us-2.privatelink"  # PrivateLink account
