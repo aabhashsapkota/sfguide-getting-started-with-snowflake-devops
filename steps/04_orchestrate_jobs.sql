@@ -110,7 +110,7 @@ alter task email_notification resume;
 -- manually initiate a full execution of the DAG
 execute task vacation_spots_update;
 
-
+--Hello World
 /*
 -- SQL commands to monitor the progress of tasks
 
