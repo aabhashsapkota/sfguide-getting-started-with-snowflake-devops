@@ -17,8 +17,8 @@ jobs:
     env:
       REPO_NAME: "quickstart_common.public.quickstart_repo"
       # Read connection secrets
-      SNOWFLAKE_CONNECTIONS_DEFAULT_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
-      SNOWFLAKE_CONNECTIONS_DEFAULT_USER: ${{ secrets.SNOWFLAKE_USER }}
+      SNOWFLAKE_CONNECTIONS_DEFAULT_ACCOUNT: "zv20465.east-us-2.privatelink"
+      SNOWFLAKE_CONNECTIONS_DEFAULT_USER: "DEVOPS_ADMIN"
       SNOWFLAKE_CONNECTIONS_DEFAULT_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
 
     steps:
