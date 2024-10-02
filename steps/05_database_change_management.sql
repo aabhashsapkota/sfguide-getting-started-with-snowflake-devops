@@ -52,7 +52,7 @@ Commit your changes to the "dev" branch before continuing
 ---------------------------------------------------------
 */
 
-use role accountadmin;
+--use role accountadmin;
 -- Fetch changes from GitHub
 alter git repository quickstart_common.public.quickstart_repo fetch;
 -- Deploy the updated data pipeline
