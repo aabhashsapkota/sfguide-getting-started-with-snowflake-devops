@@ -1,4 +1,4 @@
---use role accountadmin;
+USE ROLE DEVOPS_ADMIN;
 use schema quickstart_{{environment}}.gold;
 
 
