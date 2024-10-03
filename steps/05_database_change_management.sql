@@ -45,7 +45,7 @@ join silver.attractions att on att.geo_name = city.geo_name
 -- Add the following filter conditions to the WHERE clause of the "email_notification" task in steps/04_orchestrate_jobs.sql
 and korean_restaurant_cnt > 0
 and (zoo_cnt > 0 or aquarium_cnt > 0)
-
+--hello
 
 ---------------------------------------------------------
 Commit your changes to the "dev" branch before continuing
