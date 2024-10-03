@@ -1,5 +1,5 @@
 -- Views to transform marketplace data in pipeline
---use role accountadmin;
+USE ROLE DEVOPS_ADMIN;
 use schema quickstart_{{environment}}.silver;
 
 /*
