@@ -1,4 +1,4 @@
-use role accountadmin;
+--use role accountadmin;
 drop warehouse if exists quickstart_wh;
 drop database if exists quickstart_prod;
 drop database if exists quickstart_dev;
