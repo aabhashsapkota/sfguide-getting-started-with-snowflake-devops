@@ -1,2 +1,2 @@
-execute immediate from 'steps/sample1.sql';
+execute immediate from 'steps/sample2.sql';
 
