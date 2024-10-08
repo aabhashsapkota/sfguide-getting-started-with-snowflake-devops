@@ -12,6 +12,7 @@ jobs:
       SNOWFLAKE_CONNECTIONS_DEFAULT_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
       SNOWFLAKE_CONNECTIONS_DEFAULT_USER: ${{ secrets.SNOWFLAKE_USER }}
       SNOWFLAKE_CONNECTIONS_DEFAULT_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWSQL_PWD: ${{ secrets.SNOWFLAKE_PASSWORD }}  # Set password securely
 
     steps:
       # Checkout repository to access SQL files in steps folder
@@ -32,7 +33,7 @@ jobs:
           snow connection add \
             --accountname "${SNOWFLAKE_CONNECTIONS_DEFAULT_ACCOUNT}" \
             --username "${SNOWFLAKE_CONNECTIONS_DEFAULT_USER}" \
-            --password "${SNOWFLAKE_CONNECTIONS_DEFAULT_PASSWORD}"
+            --name default  # Set default connection name
 
       # Verify Snowflake CLI installation and connection
       - name: Verify Snowflake CLI installation and connection
