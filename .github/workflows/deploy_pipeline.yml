@@ -25,11 +25,21 @@ jobs:
           source venv/bin/activate
           pip install snowflake-cli-labs --upgrade
 
-      # Verify Snowflake CLI installation
-      - name: Verify Snowflake CLI installation
+      # Configure SnowCLI connection
+      - name: Configure Snowflake CLI connection
+        run: |
+          source venv/bin/activate
+          snow connection add --name default \
+            --account-name "${SNOWFLAKE_CONNECTIONS_DEFAULT_ACCOUNT}" \
+            --username "${SNOWFLAKE_CONNECTIONS_DEFAULT_USER}" \
+            --password "${SNOWFLAKE_CONNECTIONS_DEFAULT_PASSWORD}"
+
+      # Verify Snowflake CLI installation and connection
+      - name: Verify Snowflake CLI installation and connection
         run: |
           source venv/bin/activate
           snow --version
+          snow connection test
 
       # Fetch repository changes from Snowflake Git Repo
       - name: Fetch repository changes
