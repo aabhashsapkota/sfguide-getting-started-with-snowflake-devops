@@ -18,17 +18,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Install Snowflake CLI using pip
+      # Install Snowflake CLI globally without virtual environment
       - name: Install Snowflake CLI
         run: |
-          python3 -m venv snow-env
-          source snow-env/bin/activate
-          pip install snowflake-cli
+          python3 -m pip install --upgrade pip
+          python3 -m pip install snowflake-cli
           echo "Snowflake CLI installed successfully"
 
-      # Verify Snowflake CLI installation
+      # Verify Snowflake CLI installation and output path for debugging
       - name: Verify Snowflake CLI
-        run: snow --version
+        run: |
+          which snow
+          snow --version
 
       # Fetch repository changes from Snowflake Git Repo
       - name: Fetch repository changes
@@ -40,4 +41,3 @@ jobs:
           BRANCH_NAME=${{ github.ref_name }}
           snow git execute \
             "@${REPO_NAME}/branches/${BRANCH_NAME}/deploy_parametrized_pipeline.sql"
-
