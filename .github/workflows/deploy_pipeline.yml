@@ -12,8 +12,8 @@ jobs:
       SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
       SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
       SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
-      SNOWFLAKE_WAREHOUSE: "QUICKSTART_WH" # From config.toml
-      SNOWFLAKE_ROLE: "DEVOPS_ADMIN"       # From config.toml
+      SNOWFLAKE_WAREHOUSE: "QUICKSTART_WH" # Warehouse from config.toml
+      SNOWFLAKE_ROLE: "DEVOPS_ADMIN"       # Role from config.toml
 
     steps:
       # Checkout repository to access SQL files in steps folder
@@ -34,15 +34,26 @@ jobs:
           snow --version
           env | grep SNOWFLAKE
 
-      # Fetch repository changes from Snowflake Git Repo using environment variables
+      # Fetch repository changes from Snowflake Git Repo with connection parameters
       - name: Fetch repository changes
         run: |
-          snow git fetch "${REPO_NAME}"
+          snow git fetch "${REPO_NAME}" \
+            --account ${{ secrets.SNOWFLAKE_ACCOUNT }} \
+            --user ${{ secrets.SNOWFLAKE_USER }} \
+            --password ${{ secrets.SNOWFLAKE_PASSWORD }} \
+            --role "DEVOPS_ADMIN" \
+            --warehouse "QUICKSTART_WH"
 
       # Deploy pipeline by executing the steps in the deploy_parametrized_pipeline.sql file
       - name: Deploy data pipeline
         run: |
           BRANCH_NAME=${{ github.ref_name }}
           snow git execute \
-            "@${REPO_NAME}/branches/${BRANCH_NAME}/deploy_parametrized_pipeline.sql"
+            "@${REPO_NAME}/branches/${BRANCH_NAME}/deploy_parametrized_pipeline.sql" \
+            --account ${{ secrets.SNOWFLAKE_ACCOUNT }} \
+            --user ${{ secrets.SNOWFLAKE_USER }} \
+            --password ${{ secrets.SNOWFLAKE_PASSWORD }} \
+            --role "DEVOPS_ADMIN" \
+            --warehouse "QUICKSTART_WH"
+
 
