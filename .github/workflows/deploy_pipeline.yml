@@ -12,46 +12,24 @@ jobs:
       SNOWFLAKE_CONNECTIONS_DEFAULT_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
       SNOWFLAKE_CONNECTIONS_DEFAULT_USER: ${{ secrets.SNOWFLAKE_USER }}
       SNOWFLAKE_CONNECTIONS_DEFAULT_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
-      SNOWSQL_PWD: ${{ secrets.SNOWFLAKE_PASSWORD }}  # Set password securely
 
     steps:
       # Checkout repository to access SQL files in steps folder
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Manually install Snowflake CLI in a virtual environment
-      - name: Install Snowflake CLI
-        run: |
-          python3 -m venv venv
-          source venv/bin/activate
-          pip install snowflake-cli-labs --upgrade
-
-      # Configure SnowCLI connection
-      - name: Configure Snowflake CLI connection
-        run: |
-          source venv/bin/activate
-          snow connection add \
-            --accountname "${SNOWFLAKE_CONNECTIONS_DEFAULT_ACCOUNT}" \
-            --username "${SNOWFLAKE_CONNECTIONS_DEFAULT_USER}" \
-            --name default  # Set default connection name
-
-      # Verify Snowflake CLI installation and connection
-      - name: Verify Snowflake CLI installation and connection
-        run: |
-          source venv/bin/activate
-          snow --version
-          snow connection test
+      # Install Snowflake CLI GitHub Action
+      - uses: Snowflake-Labs/snowflake-cli-action@v1
+        with:
+          cli-version: "latest"
 
       # Fetch repository changes from Snowflake Git Repo
       - name: Fetch repository changes
-        run: |
-          source venv/bin/activate
-          snow git fetch "${REPO_NAME}"
+        run: snow git fetch "${REPO_NAME}"
 
       # Deploy pipeline by executing the steps in the deploy_parametrized_pipeline.sql file
       - name: Deploy data pipeline
         run: |
-          source venv/bin/activate
           BRANCH_NAME=${{ github.ref_name }}
           snow git execute \
             "@${REPO_NAME}/branches/${BRANCH_NAME}/deploy_parametrized_pipeline.sql"
