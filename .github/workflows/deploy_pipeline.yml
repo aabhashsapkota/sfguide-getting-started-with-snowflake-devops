@@ -18,12 +18,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Manually install Snowflake CLI in a virtual environment with dependencies
-      - name: Install Snowflake CLI with dependencies
+      # Manually install Snowflake CLI in a virtual environment
+      - name: Install Snowflake CLI
         run: |
           python3 -m venv venv
           source venv/bin/activate
-          pip install snowflake-cli-labs --upgrade --include-deps
+          pip install snowflake-cli-labs --upgrade
 
       # Verify Snowflake CLI installation
       - name: Verify Snowflake CLI installation
