@@ -24,6 +24,11 @@ jobs:
           python3 -m venv snow-env
           source snow-env/bin/activate
           pip install snowflake-cli
+          echo "Snowflake CLI installed successfully"
+
+      # Verify Snowflake CLI installation
+      - name: Verify Snowflake CLI
+        run: snow --version
 
       # Fetch repository changes from Snowflake Git Repo
       - name: Fetch repository changes
@@ -35,3 +40,4 @@ jobs:
           BRANCH_NAME=${{ github.ref_name }}
           snow git execute \
             "@${REPO_NAME}/branches/${BRANCH_NAME}/deploy_parametrized_pipeline.sql"
+
