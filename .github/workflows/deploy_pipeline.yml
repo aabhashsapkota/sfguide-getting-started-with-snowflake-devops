@@ -18,10 +18,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Install Snowflake CLI GitHub Action
-      - uses: Snowflake-Labs/snowflake-cli-action@v1
-        with:
-          cli-version: "latest"
+      # Install Snowflake CLI using pip
+      - name: Install Snowflake CLI
+        run: |
+          python3 -m venv snow-env
+          source snow-env/bin/activate
+          pip install snowflake-cli
 
       # Fetch repository changes from Snowflake Git Repo
       - name: Fetch repository changes
