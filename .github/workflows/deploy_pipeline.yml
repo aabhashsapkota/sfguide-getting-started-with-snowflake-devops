@@ -9,9 +9,11 @@ jobs:
 
     env:
       REPO_NAME: "quickstart_common.public.quickstart_repo"
-      SNOWFLAKE_CONNECTIONS_DEFAULT_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
-      SNOWFLAKE_CONNECTIONS_DEFAULT_USER: ${{ secrets.SNOWFLAKE_USER }}
-      SNOWFLAKE_CONNECTIONS_DEFAULT_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+      SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWFLAKE_WAREHOUSE: "QUICKSTART_WH" # From config.toml
+      SNOWFLAKE_ROLE: "DEVOPS_ADMIN"       # From config.toml
 
     steps:
       # Checkout repository to access SQL files in steps folder
@@ -25,24 +27,17 @@ jobs:
           python3 -m pip install snowflake-cli
           echo "Snowflake CLI installed successfully"
 
-      # Configure Snowflake CLI using environment variables and config.toml
-      - name: Configure Snowflake CLI and Connection
-        run: |
-          snow configure set account ${{ secrets.SNOWFLAKE_ACCOUNT }}
-          snow configure set username ${{ secrets.SNOWFLAKE_USER }}
-          snow configure set password ${{ secrets.SNOWFLAKE_PASSWORD }}
-          snow configure set-config-file ./config.toml
-
-      # Verify Snowflake CLI installation and show connection info
+      # Verify Snowflake CLI installation and show environment variables
       - name: Verify Snowflake CLI
         run: |
           which snow
           snow --version
-          snow configure list
+          env | grep SNOWFLAKE
 
-      # Fetch repository changes from Snowflake Git Repo
+      # Fetch repository changes from Snowflake Git Repo using environment variables
       - name: Fetch repository changes
-        run: snow git fetch "${REPO_NAME}"
+        run: |
+          snow git fetch "${REPO_NAME}"
 
       # Deploy pipeline by executing the steps in the deploy_parametrized_pipeline.sql file
       - name: Deploy data pipeline
